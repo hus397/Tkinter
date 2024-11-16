@@ -1,4 +1,6 @@
 import tkinter
+import tkinter.filedialog
+import tkinter.messagebox
 
 screen = tkinter.Tk()
 screen.geometry('515x300')
@@ -37,11 +39,32 @@ def edits():
     emaile.insert(tkinter.END, l1[2])
     bdaye.insert(tkinter.END, l1[3])
     
+def savefile():
+    saveit = tkinter.filedialog.asksaveasfile(defaultextension='.txt')
+    if saveit is not None:
+        print(record, file=saveit)
+        record.clear()
+        list.delete(0, tkinter.END)
+        
+def openfile():
+    global record
+    openit = tkinter.filedialog.askopenfile(defaultextension='.txt')
+    list.delete(0, tkinter.END)
+    if openit is not None:
+        data = openit.read()
+        record = eval(data)
+        upl()
+
+def show():
+    selevar = list.curselection()
+    selevar = list.get(selevar)
+    L1 = record[selevar]
+    tkinter.messagebox.showinfo(selevar, "Name: " + selevar + "\n" + "Address: " + L1[0] + "\n" + "Mobile Number: " + L1[1] + "\n" + "Email: " + L1[2] + "\n" + "Birthday: " + L1[3] + "\n")
 
 header = tkinter.Label(screen, text = 'My Address Book')
 header.grid(row=0, column=1)
 
-open = tkinter.Button(screen, text='Open', width=7)
+open = tkinter.Button(screen, text='Open', width=7, command=openfile)
 open.grid(row=0, column=2)
 
 list = tkinter.Listbox(screen, width=30)
@@ -85,10 +108,13 @@ edit.grid(row=11, column=0)
 delete = tkinter.Button(screen, text='Delete', width=10, command=deletevar)
 delete.grid(row=11, column=1)
 
+show = tkinter.Button(screen, text='Show', width=10, command=show)
+show.grid(row=11, column=2)
+
 upa = tkinter.Button(screen, text='Update/Add', width=10, command=upac)
 upa.grid(row=11, column=3)
 
-save = tkinter.Button(screen, text='Save', width=40)
+save = tkinter.Button(screen, text='Save', width=40, command=savefile)
 save.grid(row=12, column=1, columnspan=2)
 
 
