@@ -1,11 +1,35 @@
 import tkinter
+import random
+import tkinter.messagebox
 
 screen1 = tkinter.Tk()
 screen1.geometry('300x300')
 screen1.title('Single Player')
 
 def press(button):
-    button.config(text='O')
+    if button in buttons:
+        button.config(text='O')
+        buttons.remove(button)
+        win()
+        computer_play()
+        win()
+
+def computer_play():
+    choice = random.choice(buttons)
+    buttons.remove(choice)
+    choice.config(text='X')
+
+def win():
+    for i in win_combinations:
+        if i[0].cget('text') == i[1].cget('text') == i[2].cget('text') == 'O':
+            tkinter.messagebox.showinfo('You Win!', 'Well Done! You Win!')
+            screen1.destroy()
+        elif i[0].cget('text') == i[1].cget('text') == i[2].cget('text') == 'X':
+            tkinter.messagebox.showinfo('You Lose!', 'Unlucky! You Lose!')
+            screen1.destroy()
+    if len(buttons) == 0:
+        tkinter.messagebox.showinfo('You Drew!', 'Unlucky! You Drew!')
+        screen1.destroy()
 
 Computer = tkinter.Label(screen1, text='Computer: X')
 Computer.grid(row=0, column=0, columnspan=3)
@@ -31,5 +55,9 @@ mb = tkinter.Button(screen1, width=10, height=5, command=lambda:press(mb))
 mb.grid(row=4, column=1)
 rb = tkinter.Button(screen1, width=10, height=5, command=lambda:press(rb))
 rb.grid(row=4, column=2)
+
+buttons = [lt, mt, rt, lm, mm, rm, lb, mb, rb]
+
+win_combinations = [(lt, mt, rt), (lm, mm, rm), (lb, mb, rb), (lt, lm, lb), (mt, mm, mb), (rt, rm, rb), (lt, mm, rb), (rt, mm, lb)]
 
 screen1.mainloop()
