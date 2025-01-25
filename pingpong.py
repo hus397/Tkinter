@@ -1,5 +1,6 @@
 from tkinter import *
 import random
+import time
 
 screen = Tk()
 screen.geometry('600x400')
@@ -13,7 +14,7 @@ scoreboard = canvas.create_text(300, 20, font=('Arial', 15, 'bold'), text=' 0   
 canvas.create_oval(250, 150, 350, 250, outline='white', fill='black', width=4)
 
 class Ball():
-    def __init__(self, canvas):
+    def __init__(self, canvas, paddleL, paddleR):
         self.canvas = canvas
         self.ball = self.canvas.create_oval(290, 190, 310, 210, fill='red')
         self.directions = [1, 2, 3, 4, -1, -2, -3, -4]
@@ -24,6 +25,8 @@ class Ball():
         self.canvasheight = 400
         self.sp1 = 0
         self.sp2 = 0
+        self.paddleL = paddleL
+        self.paddleR = paddleR
     def draw(self):
         self.canvas.move(self.ball, self.x, self.y)
         self.pos = self.canvas.coords(self.ball)
@@ -35,12 +38,75 @@ class Ball():
         if self.pos[2] >= 600:
             self.x = self.x * -1
             self.sp1 = self.sp1 + 1
+        self.paddlewasd()
+        self.paddlearrow()
+    def paddlewasd(self):
+        self.paddlepos = self.canvas.coords(self.paddleL.paddle)
+        if self.pos[1] >= self.paddlepos[1] and self.pos[3] <= self.paddlepos[3]:
+            if self.pos[0] >= self.paddlepos[0] and self.pos[0] <= self.paddlepos[2]:
+                self.x = self.x * -1
+                self.y = self.y * -1
+    def paddlearrow(self):
+        self.paddlepos = self.canvas.coords(self.paddleR.paddle)
+        if self.pos[1] >= self.paddlepos[1] and self.pos[3] <= self.paddlepos[3]:
+            if self.pos[2] >= self.paddlepos[0] and self.pos[2] <= self.paddlepos[2] :
+                self.x = self.x * -1
+                self.y = self.y * -1
+    
+               
 
 #create paddles (2 classes)
+class PaddleWASD():
+    def __init__(self, canvas):
+        self.canvas = canvas
+        self.y = 0
+        self.paddle = self.canvas.create_rectangle(25, 50, 30, 125, fill='white')
+        self.canvas.bind_all('w', self.moveup)
+        self.canvas.bind_all('s', self.movedown)
+    def draw(self):
+        self.canvas.move(self.paddle, 0, self.y)
+        self.pos = self.canvas.coords(self.paddle)
+        if self.pos[1] <= 0 or self.pos[3] >= 400: 
+            self.y = 0
+    def moveup(self, event):
+        self.y = -3
+    def movedown(self, event):
+        self.y = 3
         
-        
-        
-screen.mainloop()
+    
+class PaddleArrow():
+    def __init__(self, canvas):
+        self.canvas = canvas
+        self.y = 0
+        self.paddle = self.canvas.create_rectangle(575, 50, 570, 125, fill='white')
+        self.canvas.bind_all('<KeyPress-Up>', self.moveup)
+        self.canvas.bind_all('<KeyPress-Down>', self.movedown)
+    def draw(self):
+        self.canvas.move(self.paddle, 0, self.y)
+        self.pos = self.canvas.coords(self.paddle)
+        if self.pos[1] <= 0 or self.pos[3] >= 400: 
+            self.y = 0    
+    def moveup(self, event):
+        self.y = -3
+    def movedown(self, event):
+        self.y = 3
+
+
+
+paddlewas = PaddleWASD(canvas)
+paddlearw = PaddleArrow(canvas)
+ball = Ball(canvas, paddlewas, paddlearw)
+
+
+
+while True:
+    ball.draw()
+    paddlewas.draw()
+    paddlearw.draw()
+    time.sleep(0.01)
+    screen.update_idletasks()
+    screen.update()
+
 
 #centre at 300,200
 #thickness 20
