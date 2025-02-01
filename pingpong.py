@@ -40,18 +40,17 @@ class Ball():
             self.sp1 = self.sp1 + 1
         self.paddlewasd()
         self.paddlearrow()
+        canvas.itemconfigure(scoreboard, text= str(self.sp1) + ':' + str(self.sp2))
     def paddlewasd(self):
         self.paddlepos = self.canvas.coords(self.paddleL.paddle)
-        if self.pos[1] >= self.paddlepos[1] and self.pos[3] <= self.paddlepos[3]:
+        if self.pos[3] >= self.paddlepos[1] and self.pos[1] <= self.paddlepos[3]:
             if self.pos[0] >= self.paddlepos[0] and self.pos[0] <= self.paddlepos[2]:
                 self.x = self.x * -1
-                self.y = self.y * -1
     def paddlearrow(self):
         self.paddlepos = self.canvas.coords(self.paddleR.paddle)
-        if self.pos[1] >= self.paddlepos[1] and self.pos[3] <= self.paddlepos[3]:
+        if self.pos[3] >= self.paddlepos[1] and self.pos[1] <= self.paddlepos[3]:
             if self.pos[2] >= self.paddlepos[0] and self.pos[2] <= self.paddlepos[2] :
                 self.x = self.x * -1
-                self.y = self.y * -1
     
                
 
@@ -60,7 +59,7 @@ class PaddleWASD():
     def __init__(self, canvas):
         self.canvas = canvas
         self.y = 0
-        self.paddle = self.canvas.create_rectangle(25, 50, 30, 125, fill='white')
+        self.paddle = self.canvas.create_rectangle(10, 50, 15, 125, fill='white')
         self.canvas.bind_all('w', self.moveup)
         self.canvas.bind_all('s', self.movedown)
     def draw(self):
@@ -78,7 +77,7 @@ class PaddleArrow():
     def __init__(self, canvas):
         self.canvas = canvas
         self.y = 0
-        self.paddle = self.canvas.create_rectangle(575, 50, 570, 125, fill='white')
+        self.paddle = self.canvas.create_rectangle(585, 50, 590, 125, fill='white')
         self.canvas.bind_all('<KeyPress-Up>', self.moveup)
         self.canvas.bind_all('<KeyPress-Down>', self.movedown)
     def draw(self):
@@ -103,7 +102,7 @@ while True:
     ball.draw()
     paddlewas.draw()
     paddlearw.draw()
-    time.sleep(0.01)
+    time.sleep(0.02)
     screen.update_idletasks()
     screen.update()
 
